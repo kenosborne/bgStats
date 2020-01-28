@@ -1,0 +1,25 @@
+Package: bgStats
+Title: Generates Board Game player Statistics from a BoardGameGeek XML API
+Version: 0.0.0.1
+Authors@R: 
+    person(given = "Kenneth",
+           family = "Osborne",
+           role = c("aut", "cre"),
+           email = "ken.osborne.iii@gmail.com")
+Description: Uses a pre-existing API to pull XML data from BoardGameGeek.com. Interprets the XML into a data frame, for easy data manipulation. Generates relevant player and game statists a la BG Stats App, but also provides more in depth stats that are perhaps more relevant to the hardcore gamer. Allows a user to interact with stats via a shiny app.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+Depends:
+    dplyr
+Imports: 
+    XML,
+    lubridate,
+    readr
+RoxygenNote: 7.0.2
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat
+VignetteBuilder: knitr
