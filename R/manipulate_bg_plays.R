@@ -31,7 +31,7 @@ read_bgg_stats_xml <- function(
 #' @param xml_play A BGG play.xml file that is loaded into R.
 #' @return Two  possible outcomes. 1. A BGG play.xml file that is stripped of invalid plays. 2. An error that says "no valid plays logged"
 #' @export
-clean_playXML <- function(xml_play, player_data = "players", game_data = "item"){
+clean_play_xml <- function(xml_play, player_data = "players", game_data = "item"){
 
     has_both <- xml_play %>%
         lapply(
