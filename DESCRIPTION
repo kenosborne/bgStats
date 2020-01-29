@@ -16,7 +16,8 @@ Depends:
 Imports: 
     XML,
     lubridate,
-    readr
+    readr,
+    stringi
 RoxygenNote: 7.0.2
 Suggests: 
     knitr,

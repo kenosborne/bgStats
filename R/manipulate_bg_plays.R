@@ -13,6 +13,8 @@ read_xml_website <- function(
     base_url = "https://boardgamegeek.com/xmlapi2/plays?username="
     ) {
 
+    if (!grepl(user, "^[A-Za-z_0-9]{4}[A-Za-z_0-9]*$")) stop("Invalid Username")
+
     paste0(base_url, user) %>%
         readr::read_lines() %>%
         XML::xmlParse() %>%
@@ -21,16 +23,38 @@ read_xml_website <- function(
 }
 
 
+#' Consider the XML Only from Valid Games
+#'
+#' This function takes in and returns a Board Game Geek xml list parameter.
+#' The output file will only have valid plays.
+#'
+#' @param xml_play A BGG play.xml file that is loaded into R.
+#' @return Two  possible outcomes. 1. A BGG play.xml file that is stripped of invalid plays. 2. An error that says "no valid plays logged"
+#' @export
+clean_playXML <- function(xml_play, player_data = "players", game_data = "item"){
 
+    has_both <- xml_play %>%
+        lapply(
+            function(x) {
+                nms <- names(x)
+                names(nms) <- NULL
+                is.element(player_data, nms) && is.element(game_data, nms)
+            }
+        )
 
+    if (length(has_both) == 0) stop("No Valid Plays Logged")
+
+    which (has_both == TRUE) %>%
+        xml_play[.]
+}
 
 
 #' Turn a Board Game Geek file into an R Data Frame
 #'
-#' This function takes a Board Game Geek xml list parameter It outputs a
+#' This function takes a Board Game Geek xml list parameter. It outputs a
 #' data frame where all plays are sorted by play_id (listed in the data fram as `id``) and date.
 #'
-#' @param xml_play The BGG play.xml file that is loaded into R.
+#' @param xml_play An individual BGG play, usually one element of an XNL list.
 #' @param player_data The name of the xml sub-node where player data is kept. "players" by default.
 #' @param game_data The name of the xml sub-node where game data is kept. "item" by default.
 #' @return A data frame of gameplay statistics.
@@ -44,9 +68,9 @@ playXML_to_df <- function(xml_play, player_data = "players", game_data = "item")
         mutate_at(vars(-username, -name), funs(as.numeric)) %>% #change most cols to numeric cols
         mutate(join_me = 0)
 
-    game_name <- XML::xmlGetAttr(play[[game_data]], "name")
+    game_name <- XML::xmlGetAttr(xml_play[[game_data]], "name")
 
-    play_data <- XML::xmlAttrs(play) %>%
+    play_data <- XML::xmlAttrs(xml_play) %>%
         t() %>%
         as.data.frame(stringsAsFactors = FALSE) %>%
         mutate_at(vars(-location, -date), funs(as.numeric)) %>%

@@ -7,7 +7,7 @@
 playXML_to_df(xml_play, player_data = "players", game_data = "item")
 }
 \arguments{
-\item{xml_play}{The BGG play.xml file that is loaded into R.}
+\item{xml_play}{An individual BGG play, usually one element of an XNL list.}
 
 \item{player_data}{The name of the xml sub-node where player data is kept. "players" by default.}
 
@@ -17,6 +17,6 @@ playXML_to_df(xml_play, player_data = "players", game_data = "item")
 A data frame of gameplay statistics.
 }
 \description{
-This function takes a Board Game Geek xml list parameter It outputs a
+This function takes a Board Game Geek xml list parameter. It outputs a
 data frame where all plays are sorted by play_id (listed in the data fram as `id``) and date.
 }
