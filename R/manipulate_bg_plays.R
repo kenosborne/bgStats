@@ -87,4 +87,3 @@ playXML_to_df <- function(xml_play, player_data = "players", game_data = "item")
     df
 
 }
-

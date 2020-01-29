@@ -4,13 +4,13 @@
 \alias{clean_playXML}
 \title{Consider the XML Only from Valid Games}
 \usage{
-clean_playXML(xml_play)
+clean_playXML(xml_play, player_data = "players", game_data = "item")
 }
 \arguments{
 \item{xml_play}{A BGG play.xml file that is loaded into R.}
 }
 \value{
-Three possible outcomes. 1. A BGG play.xml file that is stripped of invalid plays. 2. imvalid username 3. no valid plays logged
+Two  possible outcomes. 1. A BGG play.xml file that is stripped of invalid plays. 2. An error that says "no valid plays logged"
 }
 \description{
 This function takes in and returns a Board Game Geek xml list parameter.
