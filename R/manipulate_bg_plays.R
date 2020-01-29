@@ -13,7 +13,7 @@ read_xml_website <- function(
     base_url = "https://boardgamegeek.com/xmlapi2/plays?username="
     ) {
 
-    if (!grepl(user, "^[A-Za-z_0-9]{4}[A-Za-z_0-9]*$")) stop("Invalid Username")
+    if (!grepl("^[A-Za-z_0-9]{4}[A-Za-z_0-9]*$", user)) stop("Invalid Username")
 
     paste0(base_url, user) %>%
         readr::read_lines() %>%
