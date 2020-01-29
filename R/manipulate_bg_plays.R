@@ -8,7 +8,7 @@
 #' @param base_url The url of Board Game Geek's xml api.
 #' @return A list of gameplay statistics in XML style.
 #' @export
-read_xml_website <- function(
+read_bgg_stats_xml <- function(
     user,
     base_url = "https://boardgamegeek.com/xmlapi2/plays?username="
     ) {
@@ -51,26 +51,25 @@ clean_playXML <- function(xml_play, player_data = "players", game_data = "item")
 
 #' Turn a Board Game Geek file into an R Data Frame
 #'
-#' This function takes a Board Game Geek xml list parameter. It outputs a
+#' This function takes a Board Game Geek xml node. It outputs a
 #' data frame where all plays are sorted by play_id (listed in the data fram as `id``) and date.
 #'
-#' @param xml_play An individual BGG play, usually one element of an XNL list.
+#' @param xml_node An individual BGG play, usually one element of an XNL list.
 #' @param player_data The name of the xml sub-node where player data is kept. "players" by default.
 #' @param game_data The name of the xml sub-node where game data is kept. "item" by default.
 #' @return A data frame of gameplay statistics.
-#' @export
-playXML_to_df <- function(xml_play, player_data = "players", game_data = "item") {
+play_node_to_df <- function(xml_node, player_data = "players", game_data = "item") {
 
-    df <- XML::xmlSApply(xml_play[[player_data]], XML::xmlAttrs) %>%
+    df <- XML::xmlSApply(xml_node[[player_data]], XML::xmlAttrs) %>%
         t() %>%
         as.data.frame(stringsAsFactors = FALSE) %>% #all cols are char cols
         tibble::remove_rownames() %>%
         mutate_at(vars(-username, -name), funs(as.numeric)) %>% #change most cols to numeric cols
         mutate(join_me = 0)
 
-    game_name <- XML::xmlGetAttr(xml_play[[game_data]], "name")
+    game_name <- XML::xmlGetAttr(xml_node[[game_data]], "name")
 
-    play_data <- XML::xmlAttrs(xml_play) %>%
+    play_data <- XML::xmlAttrs(xml_node) %>%
         t() %>%
         as.data.frame(stringsAsFactors = FALSE) %>%
         mutate_at(vars(-location, -date), funs(as.numeric)) %>%
@@ -85,5 +84,21 @@ playXML_to_df <- function(xml_play, player_data = "players", game_data = "item")
         select(-join_me)
 
     df
+
+}
+
+
+#' Turn a Board Game Geek file into an R Data Frame
+#'
+#' Takes a Board Game Geek xml list parameter. It outputs a data frame where all
+#' plays are sorted by play_id (listed in the data fram as `id``) and date.
+#'
+#' @param xml_play An individual BGG play, usually one element of an XNL list.
+#' @return A data frame of gameplay statistics.
+#' @export
+play_xml_to_df <- function(xml_play, player_data = "players", game_data = "item") {
+
+    lapply(xml_play, play_node_to_df) %>%
+        rbind_list()
 
 }

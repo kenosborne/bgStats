@@ -2,5 +2,5 @@
 
 export(add_winner_data)
 export(clean_playXML)
-export(playXML_to_df)
-export(read_xml_website)
+export(play_xml_to_df)
+export(read_bgg_stats_xml)
