@@ -14,7 +14,7 @@ generate_player_stats <- function(play_df){
         summarise(
             play_count = n(),
             distinct_games = length(unique(game)),
-            chair_hours = sum(length),
+            chair_hours = sum(length) / 60,
             expected_wins = sum(expected_wins)
         )
 
