@@ -3,5 +3,6 @@
 export(clean_play_xml)
 export(generate_game_stats)
 export(generate_player_stats)
+export(get_gaming_index)
 export(play_xml_to_df)
 export(read_bgg_stats_xml)
