@@ -64,10 +64,71 @@ generate_game_stats <- function(play_df) {
         group_by(id, length, game) %>%
         summarise(player_count = length(unique(name))) %>%
         group_by(game) %>%
-        summarise(hours_played = sum(length) / 60)
+        summarise(clock_hours = sum(length) / 60)
 
     df <- left_join(df, play_time, by = "game")
 
     df
 
+}
+
+
+#' Get Z x Z Index
+#'
+#' Get a gaming index, such as the H-index.
+#'
+#' Input a play df and the index you desire.
+#' H-index: N where you have played N distinct games at least N times each.
+#' HH-index: N where you have played N distinct games for at least N hours each.
+#' K-index: N where you have played with N distinct people for at least N games each.
+#' KH-index: N where you have played with N distinct people for at least N hours each.
+#' Returns the value of the given index.
+#'
+#' @param play_df a data frame of valid plays
+#' @param play_index an index of any of the index values: "H", "HH", "K", or "KH", not case sensitive
+#' @export
+get_gaming_index <- function(play_df, play_index) {
+
+    # check if the index is valid
+    if (!grepl("^[HhKk][Hh]?", ind) | (length(play_index) > 1)) stop("ValueError: Invalid play_index value")
+
+    play_index <- tolower(ind)
+
+    if (ind == "h") {
+
+        play_df %>%
+            generate_game_stats() %>%
+            arrange(desc(play_count)) %>%
+            pull(play_count) %>%
+            find_index() %>%
+            return()
+
+    } else if (ind == "hh") {
+
+        play_df %>%
+            generate_game_stats() %>%
+            arrange(desc(chair_hours)) %>%
+            pull(clock_hours) %>%
+            find_index() %>%
+            return()
+
+    } else if (ind == "k") {
+
+        play_df %>%
+            generate_player_stats() %>%
+            arrange(desc(play_count)) %>%
+            pull(play_count) %>%
+            find_index() %>%
+            return()
+
+    } else if (ind == "kh") {
+
+        play_df %>%
+            generate_player_stats() %>%
+            arrange(desc(hours_played)) %>%
+            pull(hours_played) %>%
+            find_index() %>%
+            return()
+
+    }
 }
