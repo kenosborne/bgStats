@@ -90,11 +90,11 @@ generate_game_stats <- function(play_df) {
 get_gaming_index <- function(play_df, play_index) {
 
     # check if the index is valid
-    if (!grepl("^[HhKk][Hh]?", ind) | (length(play_index) > 1)) stop("ValueError: Invalid play_index value")
+    if ((!grepl("^[HhKk][Hh]$|^[HhKk]$", play_index)) | (length(play_index) > 1)) stop("ValueError: Invalid play_index value")
 
-    play_index <- tolower(ind)
+    play_index <- tolower(play_index)
 
-    if (ind == "h") {
+    if (play_index == "h") {
 
         play_df %>%
             generate_game_stats() %>%
@@ -103,16 +103,16 @@ get_gaming_index <- function(play_df, play_index) {
             find_index() %>%
             return()
 
-    } else if (ind == "hh") {
+    } else if (play_index == "hh") {
 
         play_df %>%
             generate_game_stats() %>%
-            arrange(desc(chair_hours)) %>%
+            arrange(desc(clock_hours)) %>%
             pull(clock_hours) %>%
             find_index() %>%
             return()
 
-    } else if (ind == "k") {
+    } else if (play_index == "k") {
 
         play_df %>%
             generate_player_stats() %>%
@@ -121,12 +121,12 @@ get_gaming_index <- function(play_df, play_index) {
             find_index() %>%
             return()
 
-    } else if (ind == "kh") {
+    } else if (play_index == "kh") {
 
         play_df %>%
             generate_player_stats() %>%
-            arrange(desc(hours_played)) %>%
-            pull(hours_played) %>%
+            arrange(desc(chair_hours)) %>%
+            pull(chair_hours) %>%
             find_index() %>%
             return()
 
